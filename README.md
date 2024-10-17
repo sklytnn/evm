@@ -17,7 +17,7 @@ A tool for automatically deploying Ethereum smart contracts to various networks.
 
 ## Getting Started
 
-To use **EVM Auto Deploy**, follow these steps:
+To use **EVM Auto**, follow these steps:
 
 1. Clone the repository:
 
