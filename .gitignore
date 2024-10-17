@@ -1,0 +1,20 @@
+# Ignore node modules
+node_modules/
+
+# Ignore environment variables
+.env
+
+# Optionally ignore package-lock.json if you prefer to manage versions manually
+# package-lock.json
+
+# Ignore compiled contract artifacts (if applicable)
+# If you have a build directory or similar for your contracts, you may want to ignore it
+build/
+
+# Ignore temporary files
+*.log
+*.tmp
+
+# Ignore IDE files (if applicable)
+.idea/
+.vscode/
