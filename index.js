@@ -11,8 +11,8 @@ const readlineSync = require('readline-sync');
 
 // Helper Functions
 const randomWords = [
-  'Alpha', 'Beta', 'Gamma', 'Delta', 'Epsilon',
-  // ... (include the rest of your words here)
+  // (daftar kata tetap sama)
+  'Adventure', 'Quest', 'Hero', 'Legend', 'Treasure', 'Mystery', 'Journey', // ...
 ];
 
 function randomWord() {
@@ -46,10 +46,6 @@ function randomAddress() {
   return address;
 }
 
-// Call randomAddress function
-const newWalletAddress = randomAddress();
-console.log(newWalletAddress);
-
 // Main Function
 async function main() {
   displayHeader();
@@ -81,8 +77,8 @@ async function main() {
   // Deploy Tokens
   for (let i = 0; i < numDeployments; i++) {
     const name = `${randomWord()}_${randomWord()}`; // Two random words for token name
-    const symbol = randomWord().toUpperCase().slice(0, 3); // First three letters of a random word for symbol
-    const supply = randomSupply();
+    const symbol = name.toUpperCase().slice(0, 3); // First three letters of the token name for symbol
+    const supply = randomSupply(); // Random supply for minting
 
     const contractAddress = await deployContract(selectedNetwork, name, symbol, supply);
    

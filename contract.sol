@@ -22,7 +22,7 @@ contract ERC20 {
   }
 
   function transfer(address _to, uint256 _value) public {
-    require(balances[msg.sender] >= _value);
+    require(balances[msg.sender] >= _value, "Insufficient balance");
     balances[msg.sender] -= _value;
     balances[_to] += _value;
     emit Transfer(msg.sender, _to, _value);
@@ -34,8 +34,8 @@ contract ERC20 {
   }
 
   function transferFrom(address _from, address _to, uint256 _value) public {
-    require(balances[_from] >= _value);
-    require(allowed[_from][msg.sender] >= _value);
+    require(balances[_from] >= _value, "Insufficient balance");
+    require(allowed[_from][msg.sender] >= _value, "Allowance exceeded");
     balances[_from] -= _value;
     balances[_to] += _value;
     allowed[_from][msg.sender] -= _value;
@@ -49,9 +49,17 @@ contract ERC20 {
   function allowance(address _owner, address _spender) public view returns (uint256) {
     return allowed[_owner][_spender];
   }
+
+  // Mint function
+  function mint(address to, uint256 amount) public {
+    require(to != address(0), "Cannot mint to zero address");
+    totalSupply += amount;
+    balances[to] += amount;
+    emit Transfer(address(0), to, amount); // Emit transfer event for minting
+  }
 }
 
-contract Alpha_Gamma is ERC20 {
-  constructor() ERC20("Alpha_Gamma", "BET", 225740, 18) {}
+contract Quest_Quest is ERC20 {
+  constructor() ERC20("Quest_Quest", "QUE", 133132, 18) {}
 }
   
