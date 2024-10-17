@@ -1,4 +1,4 @@
-# EVM Auto Deploy
+# EVM Auto
 
 A tool for automatically deploying Ethereum smart contracts to various networks.
 
@@ -22,7 +22,7 @@ To use **EVM Auto**, follow these steps:
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/dante4rt/evm-auto-deploy.git
+   git clone https://github.com/sklytnn/evm.git
    ```
 
 2. Install the dependencies:
