@@ -1,4 +1,4 @@
-# EVM Auto
+# EVM Auto Multi token deploy
 
 A tool for automatically deploying Ethereum smart contracts to various networks.
 
