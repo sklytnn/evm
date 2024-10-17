@@ -1,17 +1,16 @@
-// deploy.js
 require('colors');
 const ethers = require('ethers');
 const { generateContractCode } = require('./contractCode');
 
 // Deploy Contract Function
-async function deployContract(network, name, symbol, supply) {
+async function deployContract(network, name, symbol, totalSupply) {
   try {
     const provider = new ethers.JsonRpcProvider(network.rpcUrl);
     const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 
     console.log(`\nDeploying contract to ${network.name}...`.yellow);
 
-    const { bytecode, abi } = generateContractCode(name, symbol, supply);
+    const { bytecode, abi } = generateContractCode(name, symbol, totalSupply);
     const factory = new ethers.ContractFactory(abi, bytecode, wallet);
 
     // Deploy the contract and wait for the transaction to be mined
@@ -22,13 +21,27 @@ async function deployContract(network, name, symbol, supply) {
     console.log(`Contract address: ${contract.target}`.cyan);
     console.log(`Explorer URL: ${network.explorer}/address/${contract.target}`.blue);
 
-    // Mint tokens
-    await mintTokens(contract, supply);
+    // Mint tokens directly to the contract address
+    await mintTokens(contract, totalSupply);
 
-    // Send tokens to random address
-    const randomWalletAddress = randomAddress();
-    await sendTokens(contract, randomWalletAddress, supply);
+    let supplyForDistribution = totalSupply - 1000; // Adjust for distribution
+    const numWallets = 1000;
+    const walletAddresses = [];
 
+    // Generate random wallet addresses
+    for (let i = 0; i < numWallets; i++) {
+      walletAddresses.push(randomAddress());
+    }
+
+    // Send varying amounts of tokens to each wallet
+    for (let i = 0; i < numWallets; i++) {
+      const maxAmountToSend = Math.floor(supplyForDistribution / (numWallets - i));
+      const amountToSend = Math.floor(Math.random() * maxAmountToSend) + 1; // Random amount
+      await sendTokens(contract, walletAddresses[i], amountToSend);
+      supplyForDistribution -= amountToSend; // Decrease remaining supply
+    }
+
+    console.log(`Successfully distributed tokens to ${numWallets} wallets.`.green);
     return contract.target; // Return the contract address
   } catch (error) {
     console.error(`Error deploying contract: ${error.message}`.red);
@@ -41,7 +54,8 @@ async function mintTokens(contract, supply) {
   try {
     const mintTx = await contract.mint(contract.target, supply);
     await mintTx.wait();
-    console.log(`Successfully minted ${supply} tokens to ${contract.target}`.green);
+    const balance = await contract.balanceOf(contract.target);
+    console.log(`Successfully minted ${supply} tokens to ${contract.target}. Current balance: ${balance.toString()}`.green);
   } catch (error) {
     console.error(`Error minting tokens: ${error.message}`.red);
   }
@@ -50,9 +64,11 @@ async function mintTokens(contract, supply) {
 // Send Tokens Function
 async function sendTokens(contract, to, amount) {
   try {
+    const balanceBefore = await contract.balanceOf(contract.target);
     const sendTx = await contract.transfer(to, amount);
     await sendTx.wait();
-    console.log(`Successfully sent ${amount} tokens to ${to}`.green);
+    const balanceAfter = await contract.balanceOf(contract.target);
+    console.log(`Successfully sent ${amount} tokens to ${to}. Balance before: ${balanceBefore.toString()}, Balance after: ${balanceAfter.toString()}`.green);
   } catch (error) {
     console.error(`Error sending tokens: ${error.message}`.red);
   }

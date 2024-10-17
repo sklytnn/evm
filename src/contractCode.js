@@ -1,6 +1,27 @@
 const solc = require('solc');
 const fs = require('fs');
 
+function generateContractCode(name, symbol, totalSupply) {
+  const abi = [
+    // ... ABI definitions
+  ];
+
+  const bytecode = `
+    // Solidity contract code here
+    contract MyToken is ERC20 {
+        constructor() ERC20("${name}", "${symbol}") {
+            _mint(msg.sender, ${totalSupply});
+        }
+    }
+  `;
+
+  return { abi, bytecode };
+}
+
+module.exports = { generateContractCode };
+
+
+
 function generateContractCode(name, symbol, supply) {
   const contractCode = `// SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;

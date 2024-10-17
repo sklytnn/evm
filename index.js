@@ -1,49 +1,24 @@
 require('dotenv').config();
 require('colors');
-
-const {
-  loadNetworkConfig,
-  displayHeader,
-  delay,
-} = require('./src/utils');
+const ethers = require('ethers');
+const { loadNetworkConfig, displayHeader, delay } = require('./src/utils'); // Hanya satu deklarasi
 const { deployContract } = require('./src/deploy');
 const readlineSync = require('readline-sync');
 
 // Helper Functions
 const randomWords = [
-  // (daftar kata tetap sama)
-  'Adventure', 'Quest', 'Hero', 'Legend', 'Treasure', 'Mystery', 'Journey', // ...
+  'Adventure', 'Quest', 'Hero', 'Legend', 'Treasure', 'Mystery', 'Journey',
 ];
 
 function randomWord() {
   if (randomWords.length === 0) {
-    return 'DEFAULT'; // Return a default value if the array is empty
+    return 'DEFAULT';
   }
   return randomWords[Math.floor(Math.random() * randomWords.length)];
 }
 
 function randomSupply() {
   return Math.floor(Math.random() * 1000000) + 1; // Random supply between 1 and 1,000,000
-}
-
-function randomAddress() {
-  let address = '0x';
-  const chars = '0123456789abcdef';
-
-  // Generate random address
-  for (let i = 0; i < 40; i++) {
-    address += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-
-  // Ensure address does not start with 0x00000
-  while (address.startsWith('0x00000')) {
-    address = '0x';
-    for (let i = 0; i < 40; i++) {
-      address += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-  }
-
-  return address;
 }
 
 // Main Function
