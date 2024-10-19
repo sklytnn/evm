@@ -59,7 +59,7 @@ contract ERC20 {
   }
 }
 
-contract Horizon_Xenith is ERC20 {
-  constructor() ERC20("Horizon_Xenith", "HOR", 733038, 18) {}
+contract Indigo_Vapor is ERC20 {
+  constructor() ERC20("Indigo_Vapor", "IND", 767733, 18) {}
 }
   

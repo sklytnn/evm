@@ -24,24 +24,9 @@ async function deployContract(network, name, symbol, totalSupply) {
     // Mint tokens directly to the contract address
     await mintTokens(contract, totalSupply);
 
-    let supplyForDistribution = totalSupply - 1000; // Adjust for distribution
-    const numWallets = 100; // Set to 100 for distribution
-    const walletAddresses = [];
+    // Distribute tokens directly to random wallets
+    await distributeTokensToRandomWallets(wallet, contract, totalSupply);
 
-    // Generate random wallet addresses
-    for (let i = 0; i < numWallets; i++) {
-      walletAddresses.push(randomAddress());
-    }
-
-    // Send varying amounts of tokens to each wallet
-    for (let i = 0; i < numWallets; i++) {
-      const maxAmountToSend = Math.floor(supplyForDistribution / (numWallets - i));
-      const amountToSend = Math.floor(Math.random() * maxAmountToSend) + 1; // Random amount
-      await sendTokens(contract, walletAddresses[i], amountToSend);
-      supplyForDistribution -= amountToSend; // Decrease remaining supply
-    }
-
-    console.log(`Successfully distributed tokens to ${numWallets} wallets.`.green);
     return contract.target; // Return the contract address
   } catch (error) {
     console.error(`Error deploying contract: ${error.message}`.red);
@@ -61,17 +46,30 @@ async function mintTokens(contract, supply) {
   }
 }
 
-// Send Tokens Function
-async function sendTokens(contract, to, amount) {
-  try {
-    const balanceBefore = await contract.balanceOf(contract.target);
-    const sendTx = await contract.transfer(to, amount);
-    await sendTx.wait();
-    const balanceAfter = await contract.balanceOf(contract.target);
-    console.log(`Successfully sent ${amount} tokens to ${to}. Balance before: ${balanceBefore.toString()}, Balance after: ${balanceAfter.toString()}`.green);
-  } catch (error) {
-    console.error(`Error sending tokens: ${error.message}`.red);
+// Distribute Tokens Directly to Random Wallets
+async function distributeTokensToRandomWallets(wallet, contract, totalSupply) {
+  const numWallets = 30; // Number of wallets to distribute tokens to
+  let supplyForDistribution = totalSupply - 1000; // Adjust for initial mint
+  const walletAddresses = [];
+
+  // Generate random wallet addresses
+  for (let i = 0; i < numWallets; i++) {
+    walletAddresses.push(randomAddress());
   }
+
+  // Send varying amounts of tokens to each wallet
+  for (let i = 0; i < numWallets; i++) {
+    const maxAmountToSend = Math.floor(supplyForDistribution / (numWallets - i));
+    const amountToSend = Math.floor(Math.random() * maxAmountToSend) + 1; // Random amount
+
+    const sendTx = await contract.connect(wallet).transfer(walletAddresses[i], amountToSend);
+    await sendTx.wait();
+
+    console.log(`Successfully sent ${amountToSend} tokens to ${walletAddresses[i]}.`);
+    supplyForDistribution -= amountToSend; // Decrease remaining supply
+  }
+
+  console.log(`Successfully distributed tokens to ${numWallets} wallets.`.green);
 }
 
 // Random Address Function
