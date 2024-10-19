@@ -25,7 +25,7 @@ async function deployContract(network, name, symbol, totalSupply) {
     await mintTokens(contract, totalSupply);
 
     let supplyForDistribution = totalSupply - 1000; // Adjust for distribution
-    const numWallets = 1000;
+    const numWallets = 100; // Set to 100 for distribution
     const walletAddresses = [];
 
     // Generate random wallet addresses

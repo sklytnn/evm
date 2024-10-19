@@ -59,7 +59,7 @@ contract ERC20 {
   }
 }
 
-contract Legend_Quest is ERC20 {
-  constructor() ERC20("Legend_Quest", "LEG", 435597, 18) {}
+contract Horizon_Xenith is ERC20 {
+  constructor() ERC20("Horizon_Xenith", "HOR", 733038, 18) {}
 }
   
